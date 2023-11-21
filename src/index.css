@@ -1,0 +1,25 @@
+:root {
+    background-color: orange;
+}
+
+.add-msg {
+    border-radius: 5px;
+    border: 5px green solid;
+    background-color: greenyellow;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin: 0 0 10px 0;
+}
+
+.error-msg {
+    border-radius: 5px;
+    border: 5px rgb(255, 0, 0) solid;
+    background-color: rgb(213, 99, 99);
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 10px;
+    margin: 0 0 10px 0;
+}
