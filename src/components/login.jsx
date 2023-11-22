@@ -1,10 +1,11 @@
 import ErrMsg from "./ErrorMsg"
-const Login = ({ handleLogin, username, setUsername, password, setPassword, addErr }) => {
+import Notification from "./Notification"
+const Login = ({ handleLogin, username, setUsername, password, setPassword}) => {
 
     return (
         <>
             <h2>Log in to application</h2>
-            {addErr === '' ? <></> : <ErrMsg />}
+            <Notification msgColor={'error-msg'}/>
             <form onSubmit={handleLogin}>
                 <div>
                     username

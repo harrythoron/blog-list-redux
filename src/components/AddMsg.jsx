@@ -3,7 +3,7 @@ const AddMsg = ({ msg }) => {
         <div className="add-msg">
             {msg}
         </div>
-    )
+    ) 
 }
 
 export default AddMsg

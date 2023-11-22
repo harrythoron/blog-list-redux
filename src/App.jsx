@@ -6,12 +6,16 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/loginService'
 
-import AddMsg from './components/AddMsg'
+// import AddMsg from './components/AddMsg'
+import {useDispatch} from 'react-redux'
+import { setNotify } from './reducers/notifiReducer'
+import Notification from './components/Notification'
 
 
 
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
@@ -19,8 +23,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [author, setAuthor] = useState('')
-  const [addMsg, setAddMsg] = useState('')
-  const [addErr, setAddErr] = useState('')
+  // const [addMsg, setAddMsg] = useState('')
+  // const [addErr, setAddErr] = useState('')
   const togglableRef = useRef()
 
   useEffect(() => {
@@ -53,10 +57,14 @@ const App = () => {
       setPassword('')
     } catch (exception) {
       console.log(exception.response.data.error, 'exception for login in app.jsx')
-      setAddErr(exception)
-      setTimeout(() => {
-        setAddErr('')
-      }, 5000);
+      // setAddErr(exception)
+      // setTimeout(() => {
+      //   setAddErr('')
+      // }, 5000);
+      dispatch(setNotify({
+        content:'wrong username or password',
+         time:5000
+        }))
       setUsername('')
       setPassword('')
     }
@@ -84,10 +92,14 @@ const App = () => {
       console.log(addedBlog, 'addedBlog from frontend')
 
       setBlogs(blogs.concat(addedBlog).sort((a, b) => a.likes > b.likes ? 0 : 1))
-      setAddMsg(`a new blog ${addedBlog.title} by ${addedBlog.author}`)
-      setTimeout(() => {
-        setAddMsg('')
-      }, 5000);
+      // setAddMsg(`a new blog ${addedBlog.title} by ${addedBlog.author}`)
+      // setTimeout(() => {
+      //   setAddMsg('')
+      // }, 5000);
+      dispatch(setNotify({
+        content:`a new blog ${addedBlog.title} by ${addedBlog.author}`,
+        time:5000
+      }))
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -144,10 +156,10 @@ const App = () => {
   return (
     <div>
       {!user
-        ? <Login handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} addErr={addErr} />
+        ? <Login handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}  />
         : <div>
           <h2>blogs</h2>
-          {addMsg === '' ? <></> : <AddMsg msg={addMsg} />}
+          <Notification msgColor={'add-msg'} />
           <div>
             {user.name} logged in
             <button onClick={logOut}>logout</button>
