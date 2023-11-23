@@ -14,6 +14,11 @@ const blogSlice = createSlice({
             const id = action.payload.id
 
             return state.map(st => st.id !== id ? st : action.payload)
+        },
+        removeBlog(state, action) {
+            const id = action.payload.id
+
+            return state.filter(blog => blog.id !== id).sort((a, b) => a.likes > b.likes ? 0 : 1)
         }
     }
 
@@ -49,6 +54,13 @@ export const updateVote = blog => {
                })) 
             })
             .catch(err => console.log('err in put request for likes app.jsx',err ))
+    }
+}
+
+// thunk functon to delete blog
+export const deleteBlog =  (blog) => {
+    return async (dispatch, getState) => {
+
     }
 }
 

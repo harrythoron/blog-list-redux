@@ -7,35 +7,34 @@ import blogService from './services/blogs'
 import loginService from './services/loginService'
 
 // import AddMsg from './components/AddMsg'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
 import { setNotify } from './reducers/notifiReducer'
 import Notification from './components/Notification'
 import { initializeBlogs } from './reducers/blogReducer'
+import { setUser } from './reducers/userReducer'
+import { setUserAction } from './reducers/userReducer'
 
 
 
 
 const App = () => {
+  const user = useSelector(({ user }) => {
+    return user
+  })
   const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [author, setAuthor] = useState('')
-  // const [addMsg, setAddMsg] = useState('')
-  // const [addErr, setAddErr] = useState('')
+
   const togglableRef = useRef()
 
 
   useEffect(() => {
-    // blogService.getAll().then(blogs => {
-    //   //let sortBlog = blogs.sort((a, b) => a.likes > b.likes ? 0 : 1)
-    //   // console.log(sortBlog)
-    //   setBlogs(blogs.sort((a, b) => a.likes > b.likes ? 0 : 1))
-    // }
-    // )
+
     dispatch(initializeBlogs())
 
   }, [])
@@ -44,33 +43,29 @@ const App = () => {
     const loggedUser = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
-      setUser(user)
+      console.log('inside useeffect', user)
+      dispatch(setUserAction(user))
     }
   }, [])
 
-  const handleLogin = async (event) => {
+  const handleLogin = (event) => {
     event.preventDefault()
     console.log('logging in with', username, password)
 
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      setUser(user)
-      setUsername('')
-      setPassword('')
+      dispatch(setUser({ username, password }))
+
     } catch (exception) {
       console.log(exception.response.data.error, 'exception for login in app.jsx')
-      // setAddErr(exception)
-      // setTimeout(() => {
-      //   setAddErr('')
-      // }, 5000);
+
       dispatch(setNotify({
         content: 'wrong username or password',
         time: 5000
       }))
-      setUsername('')
-      setPassword('')
+
     }
+    setUsername('')
+    setPassword('')
 
   }
   const logOut = () => {
@@ -118,7 +113,7 @@ const App = () => {
 
   //remove blog button
 
-
+  console.log('endline user', user)
   return (
     <div>
       {!user
