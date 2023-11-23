@@ -21,6 +21,7 @@ const {showNotify, hideNotify} = notifiSlice.actions
 
 export const setNotify = ({content, time}) => {
     return (dispatch, state) => {
+        console.log('thunk notifi',state)
         dispatch(showNotify(content))
         setTimeout(() => {
             dispatch(hideNotify())

@@ -1,4 +1,3 @@
-import ErrMsg from "./ErrorMsg"
 import Notification from "./Notification"
 const Login = ({ handleLogin, username, setUsername, password, setPassword}) => {
 

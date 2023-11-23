@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import Login from './components/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import BlogList from './components/BlogListDisplay'
 import blogService from './services/blogs'
 import loginService from './services/loginService'
 
 // import AddMsg from './components/AddMsg'
-import {useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setNotify } from './reducers/notifiReducer'
 import Notification from './components/Notification'
+import { initializeBlogs } from './reducers/blogReducer'
 
 
 
@@ -27,14 +28,16 @@ const App = () => {
   // const [addErr, setAddErr] = useState('')
   const togglableRef = useRef()
 
-  useEffect(() => {
-    blogService.getAll().then(blogs => {
-      //let sortBlog = blogs.sort((a, b) => a.likes > b.likes ? 0 : 1)
-      // console.log(sortBlog)
-      setBlogs(blogs.sort((a, b) => a.likes > b.likes ? 0 : 1))
-    }
 
-    )
+  useEffect(() => {
+    // blogService.getAll().then(blogs => {
+    //   //let sortBlog = blogs.sort((a, b) => a.likes > b.likes ? 0 : 1)
+    //   // console.log(sortBlog)
+    //   setBlogs(blogs.sort((a, b) => a.likes > b.likes ? 0 : 1))
+    // }
+    // )
+    dispatch(initializeBlogs())
+
   }, [])
 
   useEffect(() => {
@@ -62,9 +65,9 @@ const App = () => {
       //   setAddErr('')
       // }, 5000);
       dispatch(setNotify({
-        content:'wrong username or password',
-         time:5000
-        }))
+        content: 'wrong username or password',
+        time: 5000
+      }))
       setUsername('')
       setPassword('')
     }
@@ -97,8 +100,8 @@ const App = () => {
       //   setAddMsg('')
       // }, 5000);
       dispatch(setNotify({
-        content:`a new blog ${addedBlog.title} by ${addedBlog.author}`,
-        time:5000
+        content: `a new blog ${addedBlog.title} by ${addedBlog.author}`,
+        time: 5000
       }))
       setTitle('')
       setAuthor('')
@@ -111,54 +114,18 @@ const App = () => {
 
   }
   //increase likes button 
-  const increaseLikes = async (param) => {
 
-    try {
-      const toBeChangedBlog = blogs.find(b => b.id === param.id)
-
-      const newBlog = {
-        ...toBeChangedBlog,
-        likes: toBeChangedBlog.likes + 1
-
-
-      }
-
-      const updatedBlog = await blogService.update(param.id, newBlog)
-      console.log(updatedBlog, 'updatedBlog in app.jsx')
-      //return blog as it is or update it if the id matches
-      setBlogs(blogs.map(b => b.id !== param.id ? b : updatedBlog).sort((a, b) => a.likes > b.likes ? 0 : 1))
-
-    } catch (exception) {
-      console.log(exception, 'err in put request for likes app.jsx')
-    }
-  }
 
   //remove blog button
-  const removeBlogBtn = async (param) => {
-    try {
-      if (window.confirm(`Remove blog ${param.title} by ${param.author}`)) {
-        //blog to be deleted
-        console.log(param)
-        //remove blog from frontend via filter array
-        const filteredBlogs = blogs.filter(bl => bl.id !== param.id).sort((a, b) => a.likes > b.likes ? 0 : 1)
-        setBlogs(filteredBlogs)
-        // remove blog from server by delete request
-        blogService.setToken(user.token)
-        await blogService.remove(param.id)
-      }
 
-
-    } catch (exception) {
-      console.log(exception, 'error in removeblogbutton app.jsx')
-    }
-  }
 
   return (
     <div>
       {!user
-        ? <Login handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}  />
+        ? <Login handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />
         : <div>
           <h2>blogs</h2>
+          {/* {addMsg === '' ? <></> : <AddMsg msg={addMsg} />} */}
           <Notification msgColor={'add-msg'} />
           <div>
             {user.name} logged in
@@ -171,14 +138,8 @@ const App = () => {
 
         </div>
       }
-      {blogs.map(blog =>
+      <BlogList user={user} />
 
-
-        <Blog key={blog.id} blog={blog} increaseLikes={increaseLikes} removeBlogBtn={removeBlogBtn} loggedUser={user ? user : null} />
-
-
-
-      )}
 
     </div>
   )
