@@ -1,38 +1,35 @@
 import { useSelector, useDispatch } from 'react-redux'
 import Blog from './Blog'
 import blogService from '../services/blogs'
-import { updateVote } from '../reducers/blogReducer'
+import { updateVote, deleteBlog } from '../reducers/blogReducer'
 
 const BlogList = ({ user }) => {
     const blogs = useSelector(({ blogs }) => {
 
         return [...blogs].sort((a, b) => a.likes > b.likes ? 0 : 1)
     })
+    // const user = useSelector(({ user }) => {
+    //     console.log('userrrrr', user)
+    //     return user
+    // })
+    const state = useSelector(state => state)
+    // console.log(state.user)
     const dispatch = useDispatch()
 
-    const increaseLikes = async (blog) => {
+    const increaseLikes = (blog) => {
         dispatch(updateVote(blog))
 
 
 
     }
 
-    const removeBlogBtn = async (param) => {
+    const removeBlogBtn = (blog) => {
         try {
-            if (window.confirm(`Remove blog ${param.title} by ${param.author}`)) {
-                //blog to be deleted
-                console.log(param)
-                //remove blog from frontend via filter array
-                const filteredBlogs = blogs.filter(bl => bl.id !== param.id).sort((a, b) => a.likes > b.likes ? 0 : 1)
-                setBlogs(filteredBlogs)
-                // remove blog from server by delete request
-                blogService.setToken(user.token)
-                await blogService.remove(param.id)
+            if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+                dispatch(deleteBlog(blog, state.user))
             }
-
-
         } catch (exception) {
-            console.log(exception, 'error in removeblogbutton app.jsx')
+            console.log('error in removeblogbutton app.jsx', exception)
         }
     }
     return (

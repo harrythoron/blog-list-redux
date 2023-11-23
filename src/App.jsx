@@ -43,7 +43,6 @@ const App = () => {
     const loggedUser = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
-      console.log('inside useeffect', user)
       dispatch(setUserAction(user))
     }
   }, [])
@@ -56,7 +55,7 @@ const App = () => {
       dispatch(setUser({ username, password }))
 
     } catch (exception) {
-      console.log(exception.response.data.error, 'exception for login in app.jsx')
+      console.log('exception for login in app.jsx', exception.response.data.error)
 
       dispatch(setNotify({
         content: 'wrong username or password',
@@ -113,7 +112,6 @@ const App = () => {
 
   //remove blog button
 
-  console.log('endline user', user)
   return (
     <div>
       {!user

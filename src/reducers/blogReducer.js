@@ -1,6 +1,9 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { setNotify } from './notifiReducer'
+
+
+
 
 const blogSlice = createSlice({
     name: 'blogs',
@@ -24,7 +27,7 @@ const blogSlice = createSlice({
 
 })
 
-const {setBlogs, increaseLike} = blogSlice.actions
+const { setBlogs, increaseLike, removeBlog } = blogSlice.actions
 
 // thunk function to retrieve blogs from server async
 
@@ -38,7 +41,7 @@ export const initializeBlogs = () => {
 // thunk function to update vote in server
 
 export const updateVote = blog => {
-    console.log('blog',blog)
+    console.log('blog', blog)
     return (dispatch, getState) => {
         const changedBlog = {
             ...blog,
@@ -47,19 +50,24 @@ export const updateVote = blog => {
 
         blogService.update(changedBlog.id, changedBlog)
             .then(res => {
-               dispatch(increaseLike(res))
-               dispatch(setNotify({
-                content: `You voted '${res.title}' by ${res.author}`,
-                time: 5000
-               })) 
+                dispatch(increaseLike(res))
+                dispatch(setNotify({
+                    content: `You voted '${res.title}' by ${res.author}`,
+                    time: 5000
+                }))
             })
-            .catch(err => console.log('err in put request for likes app.jsx',err ))
+            .catch(err => console.log('err in put request for likes app.jsx', err))
     }
 }
 
 // thunk functon to delete blog
-export const deleteBlog =  (blog) => {
+export const deleteBlog = (blog, user) => {
+
     return async (dispatch, getState) => {
+
+        blogService.setToken(user.token)
+        await blogService.remove(blog.id)
+        dispatch(removeBlog(blog))
 
     }
 }
